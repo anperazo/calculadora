@@ -1,0 +1,504 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.calculator {
+  background: #222;
+  padding: 20px;
+  border-radius: 10px;
+  width: 260px;
+}
+
+.display-wrapper {
+  background: #000;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  padding: 8px 12px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  min-height: 72px;
+}
+
+.display-expression {
+  color: #666;
+  font-size: 13px;
+  font-family: monospace;
+  text-align: right;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-height: 18px;
+}
+
+.display-result {
+  color: #0f0;
+  font-size: 28px;
+  font-weight: bold;
+  text-align: right;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+button {
+  padding: 15px;
+  font-size: 18px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-number {
+  background: #333;
+  color: #fff;
+}
+.btn-operator {
+  background: #ff9500;
+  color: #fff;
+}
+.btn-clear {
+  background: #ff3b30;
+  color: #fff;
+}
+.btn-equal {
+  background: #34c759;
+  color: #fff;
+}
+
+/* ── Encabezado de la calculadora ── */
+.calculator-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.calc-title {
+  color: #aaa;
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+.header-btn {
+  background: #444;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid #666;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  flex-shrink: 0;
+}
+
+.btn-help {
+  color: #ff9500;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.btn-help:hover {
+  background: #ff9500;
+  color: #fff;
+}
+
+/* ── Modal overlay ── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+}
+
+.modal-overlay.modal-visible {
+  display: flex;
+}
+
+.modal-content {
+  background: #1e1e1e;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 580px;
+  max-height: 88vh;
+  overflow-y: auto;
+  border: 1px solid #444;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+}
+
+/* ── Encabezado del modal ── */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  border-bottom: 1px solid #333;
+  position: sticky;
+  top: 0;
+  background: #1e1e1e;
+  z-index: 1;
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: #ff9500;
+  font-size: 17px;
+}
+
+.modal-close {
+  background: transparent;
+  color: #888;
+  font-size: 22px;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  border: none;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close:hover {
+  background: #ff3b30;
+  color: #fff;
+}
+
+/* ── Cuerpo del modal ── */
+.modal-body {
+  padding: 16px 20px 20px;
+}
+
+/* ── Tabla de ayuda ── */
+.ayuda-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  color: #ccc;
+}
+
+.ayuda-tabla thead th {
+  background: #2a2a2a;
+  color: #ff9500;
+  padding: 9px 10px;
+  text-align: left;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  border-bottom: 1px solid #444;
+}
+
+.ayuda-tabla tbody tr {
+  transition: background 0.15s;
+}
+
+.ayuda-tabla tbody tr:nth-child(even) {
+  background: #252525;
+}
+
+.ayuda-tabla tbody tr:hover {
+  background: #2d2d2d;
+}
+
+.ayuda-tabla td {
+  padding: 9px 10px;
+  border-bottom: 1px solid #2a2a2a;
+  vertical-align: middle;
+}
+
+.op-symbol {
+  color: #ff9500;
+  font-weight: bold;
+  font-family: monospace;
+  font-size: 14px;
+}
+
+.ayuda-tabla code,
+.ayuda-nota code {
+  background: #333;
+  color: #4ade80;
+  border-radius: 3px;
+  font-family: monospace;
+  font-size: 12px;
+}
+
+.ayuda-tabla code {
+  padding: 2px 6px;
+  white-space: nowrap;
+}
+
+.ayuda-nota {
+  color: #888;
+  font-size: 12px;
+  margin-top: 14px;
+  margin-bottom: 0;
+  padding: 10px 14px;
+  background: #252525;
+  border-radius: 5px;
+  border-left: 3px solid #ff9500;
+  line-height: 1.6;
+}
+
+.ayuda-nota strong {
+  color: #ff9500;
+}
+
+.ayuda-nota code {
+  padding: 1px 5px;
+}
+
+/* ── Botón de tema (sol/luna) ── */
+.header-btns {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-tema {
+  color: #ffd700;
+  font-size: 15px;
+  line-height: 1;
+}
+
+.btn-tema:hover {
+  background: #666;
+}
+
+/* ── Boton de historial ── */
+.btn-historial {
+  color: #7ad4ff;
+  font-size: 13px;
+  line-height: 1;
+  font-weight: bold;
+}
+
+.btn-historial:hover {
+  background: #7ad4ff;
+  color: #111;
+}
+
+.modal-content-historial {
+  max-width: 420px;
+}
+
+.historial-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.historial-vacio {
+  color: #555;
+  font-size: 12px;
+  text-align: center;
+  padding: 8px 0;
+  font-style: italic;
+}
+
+.historial-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #2a2a2a;
+  border-radius: 4px;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+  gap: 8px;
+}
+
+.historial-item:hover {
+  background: #3a3a3a;
+}
+
+.historial-expr {
+  color: #ccc;
+  font-family: monospace;
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.historial-result {
+  color: #0f0;
+  font-family: monospace;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* ══════════════ TEMA CLARO ══════════════ */
+body.light-theme {
+  background: #dde1e7;
+}
+
+body.light-theme .calculator {
+  background: #c2c9d4;
+}
+
+body.light-theme .display-wrapper {
+  background: #fff;
+}
+
+body.light-theme .display-expression {
+  color: #999;
+}
+
+body.light-theme .display-result {
+  color: #1a6b2e;
+}
+
+body.light-theme .btn-number {
+  background: #a8b0bb;
+  color: #111;
+}
+
+body.light-theme .btn-operator {
+  background: #e07c00;
+}
+
+body.light-theme .btn-help,
+body.light-theme .header-btn {
+  background: #aab0bb;
+  border-color: #8a9099;
+  color: #333;
+}
+
+body.light-theme .btn-tema {
+  color: #6b4f00;
+}
+
+body.light-theme .btn-historial {
+  color: #184b65;
+}
+
+body.light-theme .btn-help:hover {
+  background: #e07c00;
+  color: #fff;
+}
+
+body.light-theme .btn-tema:hover {
+  background: #8a9099;
+}
+
+body.light-theme .btn-historial:hover {
+  background: #8a9099;
+  color: #184b65;
+}
+
+body.light-theme .calc-title {
+  color: #444;
+}
+
+/* Historial en tema claro */
+body.light-theme .historial-item {
+  background: #b4bcc7;
+}
+
+body.light-theme .historial-item:hover {
+  background: #a2abb5;
+}
+
+body.light-theme .historial-expr {
+  color: #222;
+}
+
+body.light-theme .historial-result {
+  color: #1a6b2e;
+}
+
+body.light-theme .historial-vacio {
+  color: #777;
+}
+
+/* Modal en tema claro */
+body.light-theme .modal-content,
+body.light-theme .modal-header {
+  background: #f0f2f5;
+}
+
+body.light-theme .modal-content {
+  border-color: #c8cdd6;
+}
+
+body.light-theme .modal-header {
+  border-bottom-color: #c8cdd6;
+}
+
+body.light-theme .modal-header h2 {
+  color: #d47000;
+}
+
+body.light-theme .modal-close {
+  color: #555;
+}
+
+body.light-theme .modal-close:hover {
+  background: #ff3b30;
+  color: #fff;
+}
+
+body.light-theme .ayuda-tabla {
+  color: #222;
+}
+
+body.light-theme .ayuda-tabla thead th {
+  background: #dde1e7;
+  color: #d47000;
+  border-bottom-color: #b0b8c1;
+}
+
+body.light-theme .ayuda-tabla tbody tr:nth-child(even) {
+  background: #e5e8ed;
+}
+
+body.light-theme .ayuda-tabla tbody tr:hover {
+  background: #dde1e7;
+}
+
+body.light-theme .ayuda-tabla td {
+  border-bottom-color: #d4d8de;
+}
+
+body.light-theme .ayuda-tabla code,
+body.light-theme .ayuda-nota code {
+  background: #d8dce2;
+  color: #1a6b2e;
+}
+
+body.light-theme .ayuda-nota {
+  background: #e5e8ed;
+  color: #444;
+  border-left-color: #d47000;
+}
+
+body.light-theme .ayuda-nota strong {
+  color: #d47000;
+}
+

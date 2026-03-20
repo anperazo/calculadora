@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Examen - Calculadora</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="./assets/css/style.css">
+  </head>
+  <body>
+    <!-- Bloque principal de la calculadora -->
+    <div class="calculator">
+      <!-- Header: titulo + acciones rapidas (tema, historial, ayuda) -->
+      <div class="calculator-header">
+        <span class="calc-title">Calculadora Científica</span>
+        <div class="header-btns">
+          <button id="btnTema" class="header-btn btn-tema" onclick="toggleTema()" title="Cambiar tema">&#9728;</button>
+          <button class="header-btn btn-historial" onclick="abrirHistorial()" title="Historial">H</button>
+          <button class="header-btn btn-help" onclick="abrirAyuda()" title="Ayuda">?</button>
+        </div>
+      </div>
+
+      <!-- Display doble: arriba expresion, abajo resultado -->
+      <div class="display-wrapper">
+        <div id="expressionLine" class="display-expression"></div>
+        <div id="display" class="display-result">0</div>
+      </div>
+
+      <!-- Teclado de la calculadora -->
+      <div class="buttons">
+       
+        <button class="btn-clear" onclick="clearDisplay()">C</button>
+        <button class="btn-operator" onclick="appendValue('(')">(</button>
+        <button class="btn-operator" onclick="appendValue(')')">)</button>
+        <button class="btn-operator" onclick="hacerRaiz()">n&radic;X</button>
+
+        
+        <button class="btn-operator" onclick="hacerPotencia()">x^y</button>
+        <button class="btn-operator" onclick="hacerLog()">log</button>
+        <button class="btn-operator" onclick="hacerLn()">ln</button>
+        <button class="btn-operator" onclick="hacerPorcentaje()">%</button>
+
+        <button class="btn-operator" onclick="hacerSin()">sin</button>        
+        <button class="btn-operator" onclick="hacerCos()">cos</button>
+        <button class="btn-operator" onclick="hacerTan()">tan</button>
+        <button class="btn-operator" onclick="hacerAbs()">|X|</button>
+        
+        
+        <button class="btn-operator" onclick="appendValue('/')">/</button>
+        <button class="btn-operator" onclick="appendValue('*')">*</button>
+        <button class="btn-operator" onclick="appendValue('-')">-</button>
+        <button class="btn-operator" onclick="appendValue('+')">+</button>
+
+        <!-- Numeros y resultado -->
+        <button class="btn-number" onclick="appendValue('7')">7</button>
+        <button class="btn-number" onclick="appendValue('8')">8</button>
+        <button class="btn-number" onclick="appendValue('9')">9</button>
+        <button class="btn-equal" onclick="calculateResult()">=</button>
+
+        <button class="btn-number" onclick="appendValue('4')">4</button>
+        <button class="btn-number" onclick="appendValue('5')">5</button>
+        <button class="btn-number" onclick="appendValue('6')">6</button>
+        <button class="btn-number" onclick="appendValue('.')">.</button>
+
+        <button class="btn-number" onclick="appendValue('1')">1</button>
+        <button class="btn-number" onclick="appendValue('2')">2</button>
+        <button class="btn-number" onclick="appendValue('3')">3</button>
+        <button class="btn-number" onclick="appendValue('0')">0</button>
+      </div>
+    </div>
+
+    <!-- Modal de Ayuda -->
+    <div id="modalAyuda" class="modal-overlay" onclick="cerrarAyudaFondo(event)">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Guía de Uso</h2>
+          <button class="modal-close" onclick="cerrarAyuda()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <table class="ayuda-tabla">
+            <thead>
+              <tr>
+                <th>Botón</th>
+                <th>Cómo ingresar</th>
+                <th>Ejemplo</th>
+                <th>Resultado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="op-symbol">+ - * /</span> Básicas</td>
+                <td>Número → operador → número → <code>=</code></td>
+                <td><code>3+4*2</code></td>
+                <td>11</td>
+              </tr>
+              <tr>
+                <td><span class="op-symbol">( )</span> Paréntesis</td>
+                <td>Usar para agrupar operaciones</td>
+                <td><code>(2+3)*4</code></td>
+                <td>20</td>
+              </tr>
+              <tr>
+                <td><span class="op-symbol">n√X</span> Raíz</td>
+                <td>Índice → <code>n√X</code> → número → <code>=</code></td>
+                <td><code>3√8</code></td>
+                <td>2</td>
+              </tr>
+              <tr>
+                <td><span class="op-symbol">x^y</span> Potencia</td>
+                <td>Base → <code>x^y</code> → exponente → <code>=</code></td>
+                <td><code>2^10</code></td>
+                <td>1024</td>
+              </tr>
+              <tr>
+                <td><span class="op-symbol">log</span> Logaritmo</td>
+                <td><code>log</code> → número → <code>)</code> → <code>=</code></td>
+                <td><code>log(100)</code></td>
+                <td>2</td>
+              </tr>
+              <tr>
+                <td><span class="op-symbol">ln</span> Log. natural</td>
+                <td><code>ln</code> → número → <code>)</code> → <code>=</code></td>
+                <td><code>ln(1)</code></td>
+                <td>0</td>
+              </tr>
+              <tr>
+                <td><span class="op-symbol">%</span> Porcentaje</td>
+                <td>Número → <code>%</code> → <code>=</code></td>
+                <td><code>50%</code></td>
+                <td>0.5</td>
+              </tr>
+              <tr>
+                <td><span class="op-symbol">sin</span> Seno</td>
+                <td><code>sin</code> → ángulo → <code>)</code> → <code>=</code></td>
+                <td><code>sin(90)</code></td>
+                <td>1</td>
+              </tr>
+              <tr>
+                <td><span class="op-symbol">cos</span> Coseno</td>
+                <td><code>cos</code> → ángulo → <code>)</code> → <code>=</code></td>
+                <td><code>cos(0)</code></td>
+                <td>1</td>
+              </tr>
+              <tr>
+                <td><span class="op-symbol">tan</span> Tangente</td>
+                <td><code>tan</code> → ángulo → <code>)</code> → <code>=</code></td>
+                <td><code>tan(45)</code></td>
+                <td>1</td>
+              </tr>
+              <tr>
+                <td><span class="op-symbol">|X|</span> Valor abs.</td>
+                <td><code>abs</code> → número → <code>)</code> → <code>=</code></td>
+                <td><code>abs(-7)</code></td>
+                <td>7</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="ayuda-nota">Las funciones trigonométricas trabajan en <strong>grados</strong>. Puedes combinar operaciones, por ejemplo: <code>sin(30)+cos(60)</code></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de Historial -->
+    <div id="modalHistorial" class="modal-overlay" onclick="cerrarHistorialFondo(event)">
+      <div class="modal-content modal-content-historial">
+        <div class="modal-header">
+          <h2>Historial de Operaciones</h2>
+          <button class="modal-close" onclick="cerrarHistorial()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <ul id="historialLista" class="historial-lista">
+            <li class="historial-vacio">Sin operaciones aún</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Logica de la calculadora -->
+    <script src="./assets/js/script.js"></script>
+  </body>
+</html>
